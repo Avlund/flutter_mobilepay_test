@@ -44,7 +44,8 @@ public class MainActivity extends FlutterActivity {
                     @Override
                     public void onMethodCall(MethodCall call, Result fResult) {
                         sResult = fResult;
-                        goToPayment(new BigDecimal((int)call.argument("price")));
+                        int price = Integer.parseInt(call.argument("price").toString());
+                        goToPayment(new BigDecimal(price));
                     }
                 });
     }
@@ -91,35 +92,6 @@ public class MainActivity extends FlutterActivity {
         MobilePay.getInstance().setTimeoutSeconds(0);
     }
 
-//    private void startPayment(BigDecimal price) {
-//        // Create a new MobilePay Payment object.
-//        Payment payment = new Payment();
-//
-//        // Set the product price.
-//        payment.setProductPrice(price);
-//
-//        // Set BulkRef for this payment. Payments will be grouped under this tag.
-//        payment.setBulkRef("Afgift");
-//
-//        // Set the order ID. This is your reference and should match your business case. Has to be unique.
-//        payment.setOrderId(UUID.randomUUID().toString());
-//
-//        // Have the SDK create an Intent with the Payment object specified.
-//        Intent paymentIntent = MobilePay.getInstance().createPaymentIntent(payment);
-//
-//        // Query the SDK to see if MobilePay is present on the system.
-//        boolean isMobilePayInstalled = MobilePay.getInstance().isMobilePayInstalled(getApplicationContext());
-//
-//        // If we determine that MobilePay is installed we start an AppSwitch payment, else we could lead the user to Google Play to download the app.
-//        if (isMobilePayInstalled) {
-//            // Call startActivityForResult with the Intent and a specific request code of your choice. Wait for the selected request code in OnActivityResult.
-//            startActivityForResult(paymentIntent, MOBILEPAY_PAYMENT_REQUEST_CODE);
-//        } else {
-//            // Inform the user that MobilePay is not installed and lead them to Google Play.
-//            downloadMobilePayApp();
-//        }
-//    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -141,29 +113,11 @@ public class MainActivity extends FlutterActivity {
 
                 @Override
                 public void onCancel() {
-                    sResult.notImplemented();
+                    sResult.success(-1);
                     // The payment was cancelled, which means the user jumped back from MobilePay before processing the payment.
                     ;
                 }
             });
         }
     }
-
-//    private void downloadMobilePayApp() {
-//        // Simple dialog informing the user about the missing MobilePay app and offering them to install it from Google Play.
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("MobilePay not installed")
-//                .setMessage("Do you want to download MobilePay?")
-//                .setPositiveButton("Download", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // Create a MobilePay download Intent.
-//                        Intent intent = MobilePay.getInstance().createDownloadMobilePayIntent(getApplicationContext());
-//                        startActivity(intent);
-//                    }
-//                })
-//                .setNegativeButton("Cancel", null);
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//    }
 }
